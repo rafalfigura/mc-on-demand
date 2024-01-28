@@ -1,0 +1,4 @@
+region         = "eu-central-1"
+bucket         = "058264153719-mc-on-demand"
+key            = "mc-on-demand-do-not-edit.tfstate"
+dynamodb_table = "mc-on-demand-tfstate-lock"

@@ -1,0 +1,6 @@
+.env
+
+.terraform.lock.hcl
+.terraform
+plan.tfplan
+lambda_function.zip

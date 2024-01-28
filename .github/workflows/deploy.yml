@@ -1,0 +1,46 @@
+name: Deploy
+
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    name: Deploy with terraform
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+    - name: Terraform Init
+      working-directory: terraform
+      env:
+        AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      run: |
+          terraform init -backend-config="./config/config.remote"
+      
+    - name: Terraform Plan
+      working-directory: terraform
+      run: | 
+          terraform plan -out=plan.tfplan -input=false -var-file="./config/terraform.tfvars"
+
+    - name: Terraform Apply
+      working-directory: terraform
+      run: |
+          terraform apply "plan.tfplan"
+  
