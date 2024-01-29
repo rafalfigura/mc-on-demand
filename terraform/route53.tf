@@ -1,3 +1,8 @@
+// @TODO - maybe this can be a default zone instred of creating a new one
+data "aws_route53_zone" "root-hosted-zone" {
+  name = var.domain_name
+}
+
 resource "aws_route53_query_log" "query-log" {
   provider                 = aws.us-east-1
   cloudwatch_log_group_arn = aws_cloudwatch_log_group.query-log-group.arn

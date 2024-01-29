@@ -1,5 +1,3 @@
-
-
 resource "aws_cloudwatch_log_group" "server-log-group" {
   name       = "${local.name_prefix}-server"
   retention_in_days = local.log_retention_in_days
@@ -11,9 +9,9 @@ resource "aws_cloudwatch_log_group" "watchdog-log-group" {
 }
 
 resource "aws_cloudwatch_log_resource_policy" "query-log-resource-policy" {
+  provider        = aws.us-east-1
   policy_document = data.aws_iam_policy_document.query-log-group-policy-document.json
   policy_name     = local.name_prefix
-  provider        = aws.us-east-1
 }
 
 resource "aws_cloudwatch_log_subscription_filter" "query-log-subscription-filter" {
@@ -47,9 +45,9 @@ resource "aws_iam_policy" "server-notifications-policy" {
 }
 
 resource "aws_iam_role" "autoscaler-lambda-role" {
+  provider           = aws.us-east-1
   assume_role_policy = data.aws_iam_policy_document.autoscaler-lambda-policy-document.json
   name = "${local.name_prefix}-autoscaler-lambda-role"
-  provider           = aws.us-east-1
 }
 
 resource "aws_iam_role" "task-definition-role" {
@@ -63,14 +61,14 @@ resource "aws_iam_role" "task-execution-role" {
 }
 
 resource "aws_iam_role_policy_attachment" "autoscaler-lambda-basic-execution-policy-attachment" {
-  policy_arn = data.aws_iam_policy.autoscaler-lambda-basic-execution-policy.arn
   provider   = aws.us-east-1
+  policy_arn = data.aws_iam_policy.autoscaler-lambda-basic-execution-policy.arn
   role       = aws_iam_role.autoscaler-lambda-role.name
 }
 
 resource "aws_iam_role_policy_attachment" "autoscaler-lambda-cluster-policy-attachment" {
-  policy_arn = aws_iam_policy.service-policy.arn
   provider   = aws.us-east-1
+  policy_arn = aws_iam_policy.service-policy.arn
   role       = aws_iam_role.autoscaler-lambda-role.name
 }
 
@@ -97,49 +95,6 @@ resource "aws_iam_role_policy_attachment" "task-definition-role-server-notificat
 resource "aws_iam_role_policy_attachment" "task-execution-policy-attachment" {
   policy_arn = data.aws_iam_policy.task-execution-policy.arn
   role       = aws_iam_role.task-execution-role.name
-}
-
-
-
-
-resource "aws_security_group" "file-system-security-group" {
-  name = "${local.name_prefix}-file-system-security-group"
-
-  ingress {
-    security_groups = [aws_security_group.service-security-group.id]
-    from_port       = 2049
-    protocol        = "TCP"
-    to_port         = 2049
-  }
-
-  egress {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = 0
-    protocol    = "-1"
-    to_port     = 0
-  }
-
-  vpc_id = module.vpc.vpc_id
-}
-
-resource "aws_security_group" "service-security-group" {
-  name = "${local.name_prefix}-service-security-group"
-
-  ingress {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = local.minecraft_server_config["port"]
-    protocol    = local.minecraft_server_config["protocol"]
-    to_port     = local.minecraft_server_config["port"]
-  }
-
-  egress {
-    cidr_blocks = ["0.0.0.0/0"]
-    from_port   = 0
-    protocol    = "-1"
-    to_port     = 0
-  }
-
-  vpc_id = module.vpc.vpc_id
 }
 
 resource "aws_sns_topic" "server-notifications" {

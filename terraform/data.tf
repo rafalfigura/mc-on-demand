@@ -132,7 +132,3 @@ data "aws_iam_policy_document" "task-definition-assume-role-policy-document" {
     }
   }
 }
-
-data "aws_route53_zone" "root-hosted-zone" {
-  name = var.domain_name
-}
