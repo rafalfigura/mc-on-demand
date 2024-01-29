@@ -26,7 +26,7 @@ Enjoy setting up and managing your Minecraft server effortlessly with Minecraft 
 Thanks to [itzg](https://github.com/itzg), [JKolios](https://github.com/JKolios), [shiouen](https://github.com/shiouen), and [doctorray117](https://github.com/doctorray117)
 
 Repositories userd to create this project:
-2. https://github.com/JKolios/minecraft-ondemand-terraform
+1. https://github.com/JKolios/minecraft-ondemand-terraform
 2. https://github.com/shiouen/mod
 3. https://github.com/doctorray117/minecraft-ondemand/blob/main/README.md
 
