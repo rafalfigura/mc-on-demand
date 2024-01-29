@@ -35,4 +35,6 @@ locals {
 
   minecraft_server_container_name = "minecraft-server"
   watchdog_server_container_name = "watchdog-server"
+
+  log_retention_in_days = 3
 }

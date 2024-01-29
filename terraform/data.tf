@@ -1,19 +1,12 @@
-data "archive_file" "autoscaler-lambda" {
-  type = "zip"
-  source_content = file("${path.module}/../lambda/lambda_function.py")
-  source_content_filename = "lambda_function.py"
-  output_path             = "${path.module}/../lambda/lambda_function.zip"
-}
+
 
 data "aws_caller_identity" "current" {}
 
-//noinspection X,MissingProperty
 data "aws_iam_policy" "autoscaler-lambda-basic-execution-policy" {
   name     = "AWSLambdaBasicExecutionRole"
   provider = aws.us-east-1
 }
 
-//noinspection X,MissingProperty
 data "aws_iam_policy" "task-execution-policy" {
   name = "AmazonECSTaskExecutionRolePolicy"
 }
