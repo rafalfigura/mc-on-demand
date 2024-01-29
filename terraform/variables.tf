@@ -10,6 +10,32 @@ variable "domain_name" {
   type        = string
 }
 
+variable "name" {
+    default     = "minecraft"
+    description = "The name of the Minecraft On Demand server"
+    type        = string
+}
+
+# Budget variables
+variable "budget_enabled" {
+    default     = false
+    description = "Enable budget for the Minecraft server."
+    type        = bool
+}
+
+variable "budget_amount" {
+    default     = 5
+    description = "The amount of the budget in $USD."
+    type        = number
+}
+variable "budget_notification_emails" {
+    default     = []
+    description = "The email addresses to send budget notifications to."
+    type        = list(string)
+}
+
+
+// TO BE REMOVED (or not)
 variable "fargate_spot_pricing" {
   default     = false
   description = "Use Fargate Spot pricing if set to true."

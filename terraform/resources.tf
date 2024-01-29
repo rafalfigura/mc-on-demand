@@ -16,7 +16,7 @@ resource "aws_cloudwatch_log_group" "watchdog-log-group" {
 
 resource "aws_cloudwatch_log_resource_policy" "query-log-resource-policy" {
   policy_document = data.aws_iam_policy_document.query-log-group-policy-document.json
-  policy_name     = random_id.query-log-resource-policy-name.dec
+  policy_name     = "${var.name}-query-log-resource-policy"
   provider        = aws.us-east-1
 }
 
@@ -26,7 +26,7 @@ resource "aws_cloudwatch_log_subscription_filter" "query-log-subscription-filter
   destination_arn = aws_lambda_function.autoscaler-lambda.arn
   filter_pattern  = local.subdomain
   log_group_name  = aws_cloudwatch_log_group.query-log-group.name
-  name            = random_id.query-log-subscription-filter-name.dec
+  name            = "${var.name}-query-log-subscription-filter"
 }
 
 resource "aws_ecs_cluster" "cluster" {
@@ -123,7 +123,7 @@ resource "aws_ecs_task_definition" "task-definition" {
   ])
 
   execution_role_arn       = aws_iam_role.task-execution-role.arn
-  family                   = random_id.task-definition-family.dec
+  family                   = "${var.name}-mc-on-demand"
   cpu                      = var.server_cpu_units
   memory                   = var.server_memory
   network_mode             = "awsvpc"
@@ -164,7 +164,7 @@ resource "aws_efs_access_point" "file-system-access-point" {
   }
 
   tags = {
-    Name = random_id.file-system-access-point-name.dec
+    Name = "${var.name}-mc-on-demand-access-point"
   }
 }
 
@@ -176,7 +176,7 @@ resource "aws_efs_file_system" "file-system" {
   #  }
 
   tags = {
-    Name = random_id.file-system-name.dec
+    Name = "${var.name}-mc-on-demand-file-system"
   }
 }
 
@@ -360,39 +360,4 @@ resource "aws_sns_topic_subscription" "server-notifications-email-subscription" 
 resource "random_id" "autoscaler-lambda-name" {
   byte_length = 5
   prefix      = "mod-autoscaler-"
-}
-
-resource "random_id" "cluster-name" {
-  byte_length = 5
-  prefix      = "mod-cluster-"
-}
-
-resource "random_id" "file-system-name" {
-  byte_length = 5
-  prefix      = "mod-file-system-"
-}
-
-resource "random_id" "file-system-access-point-name" {
-  byte_length = 5
-  prefix      = "mod-file-system-access-point-"
-}
-
-resource "random_id" "query-log-resource-policy-name" {
-  byte_length = 5
-  prefix      = "mod-query-log-resource-policy-"
-}
-
-resource "random_id" "query-log-subscription-filter-name" {
-  byte_length = 5
-  prefix      = "mod-query-log-sub-filter-"
-}
-
-resource "random_id" "service-name" {
-  byte_length = 5
-  prefix      = "mod-service-"
-}
-
-resource "random_id" "task-definition-family" {
-  byte_length = 5
-  prefix      = "mod-task-definition-"
 }

@@ -1,7 +1,7 @@
 
 resource "aws_lambda_function" "autoscaler-lambda" {
   filename         = data.archive_file.autoscaler-lambda.output_path
-  function_name    = random_id.autoscaler-lambda-name.dec
+  function_name    = "${var.name}-mc-on-demand-autoscaler-lambda"
   handler          = "lambda_function.handler"
   provider         = aws.us-east-1
   role             = aws_iam_role.autoscaler-lambda-role.arn
@@ -24,5 +24,5 @@ resource "aws_lambda_permission" "allow_cloudwatch" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.autoscaler-lambda.function_name
   principal     = "logs.us-east-1.amazonaws.com"
-  source_arn    = format("%s:*", aws_cloudwatch_log_group.query-log-group.arn)
+  source_arn    = "${aws_cloudwatch_log_group.query-log-group.arn}:*"
 }

@@ -3,8 +3,8 @@ locals {
 
   default_server_environment_variables = [{ name = "EULA", value = "TRUE" }]
 
-  ecs_cluster_name = random_id.cluster-name.dec
-  ecs_service_name = random_id.service-name.dec
+  ecs_cluster_name = "${var.name}-mc-on-demand-ecs-cluster"
+  ecs_service_name = "${var.name}-mc-on-demand-ecs-service"
   ecs_volume_name  = "data"
 
   efs_gid = 1000
@@ -25,14 +25,14 @@ locals {
       protocol = "UDP"
     }
   }
-  minecraft_server_container_name = "minecraft-server"
 
   provisioned_vpc_enabled = var.vpc_id != null
   subdomain               = "${var.subdomain_part}.${var.domain_name}"
 
   tags = merge(var.tags, {
-    "project-id" = local.subdomain
+    "mc-on-demand" = local.subdomain
   })
 
+  minecraft_server_container_name = "minecraft-server"
   watchdog_server_container_name = "watchdog-server"
 }
