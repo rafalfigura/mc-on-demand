@@ -62,7 +62,7 @@ variable "minecraft_image_java" {
   type    = string
 }
 
-variable "server_debug" {
+variable "save_server_logs" {
   default     = false
   description = "Setting to `true` enables debug mode, which enables cloudwatch logs for the server containers."
   type        = bool
@@ -87,13 +87,13 @@ variable "server_memory" {
   type        = number
 }
 
-variable "server_shutdown_time" {
+variable "server_shutdown_timeout" {
   default     = 20
   description = "Number of minutes to wait after the last client disconnects before terminating."
   type        = number
 }
 
-variable "server_startup_time" {
+variable "server_startup_timeout" {
   default     = 10
   description = "Number of minutes to wait for a connection after starting before terminating."
   type        = number
@@ -103,14 +103,6 @@ variable "server_notifications_email_addresses" {
   default     = []
   description = "Email addresses to send server notifications to."
   type        = list(string)
-}
-
-
-variable "tags" {
-  default     = {}
-  description = "The resource tags."
-  nullable    = false
-  type        = map(string)
 }
 
 variable "vpc_id" {

@@ -42,7 +42,7 @@ resource "aws_ecs_task_definition" "task-definition" {
       environment      = local.server_environment_variables
       essential        = false
       image            = local.minecraft_server_config["image"]
-      logConfiguration = var.server_debug ? {
+      logConfiguration = var.save_server_logs ? {
         logDriver = "awslogs"
         options   = {
           "awslogs-group"         = aws_cloudwatch_log_group.server-log-group.name
@@ -72,8 +72,8 @@ resource "aws_ecs_task_definition" "task-definition" {
         { name = "SERVICE", value = local.ecs_service_name },
         { name = "DNSZONE", value = aws_route53_zone.hosted-zone.id },
         { name = "SERVERNAME", value = local.subdomain },
-        { name = "STARTUPMIN", value = tostring(var.server_startup_time) },
-        { name = "SHUTDOWNMIN", value = tostring(var.server_shutdown_time) },
+        { name = "STARTUPMIN", value = tostring(var.server_startup_timeout) },
+        { name = "SHUTDOWNMIN", value = tostring(var.server_shutdown_timeout) },
         { name = "SNSTOPIC", value = aws_sns_topic.server-notifications.arn },
         { name = "TWILIOFROM", value = "" },
         { name = "TWILIOTO", value = "" },
@@ -82,7 +82,7 @@ resource "aws_ecs_task_definition" "task-definition" {
       ],
       essential        = true
       image            = "doctorray/minecraft-ecsfargate-watchdog"
-      logConfiguration = var.server_debug ? {
+      logConfiguration = var.save_server_logs ? {
         logDriver = "awslogs"
         options   = {
           "awslogs-group"         = aws_cloudwatch_log_group.watchdog-log-group.name

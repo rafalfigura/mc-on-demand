@@ -29,7 +29,7 @@ locals {
   provisioned_vpc_enabled = var.vpc_id != null
   subdomain               = "${var.name}.${var.domain_name}"
 
-  tags = merge(var.tags, {
+  tags = merge(local.tags, {
     "mc-on-demand" = local.subdomain
   })
 
