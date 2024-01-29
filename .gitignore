@@ -4,3 +4,5 @@
 .terraform
 plan.tfplan
 lambda_function.zip
+
+.idea
