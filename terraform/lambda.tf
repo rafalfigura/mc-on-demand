@@ -12,7 +12,7 @@ resource "aws_lambda_function" "autoscaler_lambda" {
   handler          = "lambda_function.handler"
   provider         = aws.us-east-1
   role             = aws_iam_role.autoscaler-lambda-role.arn
-  runtime          = "python3.8"
+  runtime          = "python3.9"
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 
   environment {

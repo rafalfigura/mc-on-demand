@@ -1,18 +1,18 @@
 
 
 resource "aws_cloudwatch_log_group" "server-log-group" {
-  name_prefix       = "${var.name}-mc-on-demand-server"
+  name       = "${local.name_prefix}-server"
   retention_in_days = local.log_retention_in_days
 }
 
 resource "aws_cloudwatch_log_group" "watchdog-log-group" {
-  name_prefix       = "${var.name}-mc-on-demand-watchdog"
+  name = "${local.name_prefix}-watchdog"
   retention_in_days = local.log_retention_in_days
 }
 
 resource "aws_cloudwatch_log_resource_policy" "query-log-resource-policy" {
   policy_document = data.aws_iam_policy_document.query-log-group-policy-document.json
-  policy_name     = "${var.name}-query-log-resource-policy"
+  policy_name     = local.name_prefix
   provider        = aws.us-east-1
 }
 
@@ -22,44 +22,44 @@ resource "aws_cloudwatch_log_subscription_filter" "query-log-subscription-filter
   destination_arn = aws_lambda_function.autoscaler_lambda.arn
   filter_pattern  = local.subdomain
   log_group_name  = aws_cloudwatch_log_group.query-log-group.name
-  name            = "${var.name}-query-log-subscription-filter"
+  name = "${local.name_prefix}-subscription-filter"
 }
 
 
 resource "aws_iam_policy" "service-policy" {
-  name_prefix = "mod-service-policy-"
+  name       = "${local.name_prefix}-service-policy"
   policy      = data.aws_iam_policy_document.service-policy-document.json
 }
 
 resource "aws_iam_policy" "file-system-policy" {
-  name_prefix = "mod-file-system-policy-"
+  name       = "${local.name_prefix}-file-system-policy"
   policy      = data.aws_iam_policy_document.file-system-policy-document.json
 }
 
 resource "aws_iam_policy" "hosted-zone-policy" {
-  name_prefix = "mod-hosted-zone-policy-"
+    name       = "${local.name_prefix}-hosted-zone-policy"
   policy      = data.aws_iam_policy_document.hosted-zone-policy-document.json
 }
 
 resource "aws_iam_policy" "server-notifications-policy" {
-  name_prefix = "mod-server-notifications-policy-"
+    name       = "${local.name_prefix}-server-notifications-policy"
   policy      = data.aws_iam_policy_document.server-notifications-policy-document.json
 }
 
 resource "aws_iam_role" "autoscaler-lambda-role" {
   assume_role_policy = data.aws_iam_policy_document.autoscaler-lambda-policy-document.json
-  name_prefix        = "mod-autoscaler-role-"
+  name = "${local.name_prefix}-autoscaler-lambda-role"
   provider           = aws.us-east-1
 }
 
 resource "aws_iam_role" "task-definition-role" {
   assume_role_policy = data.aws_iam_policy_document.task-definition-assume-role-policy-document.json
-  name_prefix        = "mod-task-definition-role-"
+    name = "${local.name_prefix}-task-definition-role"
 }
 
 resource "aws_iam_role" "task-execution-role" {
   assume_role_policy = data.aws_iam_policy_document.task-definition-assume-role-policy-document.json
-  name_prefix        = "mod-task-execution-role-"
+  name = "${local.name_prefix}-task-execution-role"
 }
 
 resource "aws_iam_role_policy_attachment" "autoscaler-lambda-basic-execution-policy-attachment" {
@@ -103,7 +103,7 @@ resource "aws_iam_role_policy_attachment" "task-execution-policy-attachment" {
 
 
 resource "aws_security_group" "file-system-security-group" {
-  name_prefix = "mod-file-system-security-group-"
+  name = "${local.name_prefix}-file-system-security-group"
 
   ingress {
     security_groups = [aws_security_group.service-security-group.id]
@@ -123,7 +123,7 @@ resource "aws_security_group" "file-system-security-group" {
 }
 
 resource "aws_security_group" "service-security-group" {
-  name_prefix = "mod-service-security-group-"
+  name = "${local.name_prefix}-service-security-group"
 
   ingress {
     cidr_blocks = ["0.0.0.0/0"]
@@ -143,8 +143,7 @@ resource "aws_security_group" "service-security-group" {
 }
 
 resource "aws_sns_topic" "server-notifications" {
-  name_prefix  = "mod-server-notifications-topic-"
-  display_name = "MOD Server Notifications"
+  name ="${local.name_prefix}-server-notifications"
 }
 
 resource "aws_sns_topic_policy" "server-notifications-topic-policy" {
@@ -159,7 +158,3 @@ resource "aws_sns_topic_subscription" "server-notifications-email-subscription" 
   topic_arn = aws_sns_topic.server-notifications.arn
 }
 
-resource "random_id" "autoscaler-lambda-name" {
-  byte_length = 5
-  prefix      = "mod-autoscaler-"
-}

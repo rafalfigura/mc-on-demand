@@ -105,11 +105,6 @@ variable "server_notifications_email_addresses" {
   type        = list(string)
 }
 
-variable "subdomain_part" {
-  default     = "minecraft"
-  description = "The subdomain part."
-  type        = string
-}
 
 variable "tags" {
   default     = {}

@@ -27,7 +27,7 @@ locals {
   }
 
   provisioned_vpc_enabled = var.vpc_id != null
-  subdomain               = "${var.subdomain_part}.${var.domain_name}"
+  subdomain               = "${var.name}.${var.domain_name}"
 
   tags = merge(var.tags, {
     "mc-on-demand" = local.subdomain
@@ -37,4 +37,5 @@ locals {
   watchdog_server_container_name = "watchdog-server"
 
   log_retention_in_days = 3
+  name_prefix           = "${var.name}-mc-on-demand"
 }

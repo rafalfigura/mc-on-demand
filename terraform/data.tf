@@ -7,6 +7,7 @@ data "aws_iam_policy" "autoscaler-lambda-basic-execution-policy" {
   provider = aws.us-east-1
 }
 
+
 data "aws_iam_policy" "task-execution-policy" {
   name = "AmazonECSTaskExecutionRolePolicy"
 }
@@ -79,6 +80,7 @@ data "aws_iam_policy_document" "query-log-group-policy-document" {
   }
 
 }
+
 
 data "aws_iam_policy_document" "server-notifications-policy-document" {
   statement {
